@@ -1,0 +1,5 @@
+# .dockerignore
+node_modules
+dist
+.vscode
+# Don't exclude .prettierrc and .prettier.config.js
