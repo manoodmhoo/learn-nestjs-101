@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    AfterLoad,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
@@ -15,6 +21,11 @@ export class Blog {
     @Column({ default: 'nopic.png' })
     image: string;
 
-    @ManyToOne(() => User, user => user.blogs)
+    @ManyToOne(() => User, (user) => user.blogs)
     user: User;
+
+    @AfterLoad()
+    getUri(): void {
+        this.image = `${process.env.APP_URL}/images/${this.image}`;
+    }
 }

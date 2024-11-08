@@ -24,7 +24,7 @@ export class BlogsService {
         private userRepository: Repository<User>,
     ) {}
 
-    async create(createBlogDto: CreateBlogDto) {
+    async create(createBlogDto: CreateBlogDto, user: User) {
         try {
             const user = await this.userRepository.findOne({
                 where: { id: 1 },
@@ -58,6 +58,7 @@ export class BlogsService {
             .select([
                 'blog.id',
                 'blog.title',
+                'blog.image',
                 'blog.content',
                 'user.id',
                 'user.firstname',

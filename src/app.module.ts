@@ -10,9 +10,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
+        ThrottlerModule.forRoot([
+            {
+                ttl: 60000,
+                limit: 50,
+            },
+        ]),
         ConfigModule.forRoot(),
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'public'),
