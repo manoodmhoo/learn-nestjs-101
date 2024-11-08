@@ -1,7 +1,7 @@
 # Dockerfile
 FROM node:20.17.0
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 

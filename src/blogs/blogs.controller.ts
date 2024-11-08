@@ -1,15 +1,45 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+} from '@nestjs/common';
 import { BlogsService } from './blogs.service';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Controller({
-  path: 'blogs',
-  version: '1',
+    version: '1',
+    path: 'blogs',
 })
 export class BlogsController {
-  constructor(private readonly blogsService: BlogsService) {}
+    constructor(private readonly blogsService: BlogsService) {}
 
-  @Get()
-  findAll(): string {
-    return this.blogsService.getBlogs();
-  }
+    @Post()
+    create(@Body() createBlogDto: CreateBlogDto) {
+        return this.blogsService.create(createBlogDto);
+    }
+
+    @Get()
+    findAll() {
+        return this.blogsService.findAll();
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.blogsService.findOne(+id);
+    }
+
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+        return this.blogsService.update(+id, updateBlogDto);
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.blogsService.remove(+id);
+    }
 }

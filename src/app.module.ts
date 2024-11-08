@@ -1,26 +1,38 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BlogsModule } from './blogs/blogs.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
+import { BlogsModule } from './blogs/blogs.module';
+import { Blog } from './blogs/entities/blog.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [
-  TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'mysql',
-    port: 3306,
-    username: 'nestjs_user',
-    password: 'password',
-    database: 'nestjs_db',
-    entities: [User],
-    synchronize: true, // comment this out in production
-  }),
-  BlogsModule, UsersModule
-],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot(),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'public'),
+            exclude: ['/api*'],
+        }),
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: process.env.DATABASE_HOST || 'localhost',
+            port: parseInt(process.env.DATABASE_PORT) || 3306,
+            username: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME,
+            entities: [User, Blog],
+            synchronize: true, // comment this out in production
+        }),
+        UsersModule,
+        BlogsModule,
+        AuthModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

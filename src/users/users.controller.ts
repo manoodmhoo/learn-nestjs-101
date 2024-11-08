@@ -3,15 +3,17 @@ import {
   Get,
   Post,
   Body,
+  Query,
   Patch,
   Param,
   Delete,
-  HttpStatus } from '@nestjs/common';
+  HttpStatus, 
+  BadRequestException, 
+  HttpException } from '@nestjs/common';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { BadRequestException, HttpException } from '@nestjs/common';
 
 @Controller({
   path: 'users',
@@ -45,6 +47,13 @@ export class UsersController {
   @Get()
   async findAll() {
     return await this.usersService.findAll();
+  }
+
+  @Get('paginate')
+  async findAllWithPagination(@Query() query: any) {
+    const page = query.page || 1;
+    const page_size = query.page_size || 10;
+    return await this.usersService.findAllWithPagination(+page, +page_size);
   }
 
   @Get(':id')
@@ -88,3 +97,4 @@ export class UsersController {
      }
   }
 }
+
